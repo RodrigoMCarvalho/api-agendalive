@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("lives")
+@RequestMapping("/lives")
 public class LiveController {
 
     private LiveService liveService;
@@ -39,18 +39,18 @@ public class LiveController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LiveDocument> getOneLive(@PathVariable(value="id") String id) {
-        Optional<LiveDocument> live = liveService.findById(id);
-        if(!live.isPresent()) {
+        Optional<LiveDocument> lives = liveService.findById(id);
+        if(!lives.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<LiveDocument>(HttpStatus.OK);
+            return new ResponseEntity<LiveDocument>(lives.get(), HttpStatus.OK);
         }
     }
 
     @PostMapping
     public ResponseEntity<LiveDocument> saveLive(@RequestBody @Valid LiveDocument live) {
         live.setRegistrationDate(LocalDateTime.now());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(liveService.save(live),HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
@@ -66,13 +66,13 @@ public class LiveController {
 
     @PutMapping("/{id}")
     public ResponseEntity<LiveDocument> updateLive(@PathVariable(value="id") String id,
-                                                   @RequestBody @Valid LiveDocument liveDocument) {
+                                                   @RequestBody @Valid LiveDocument live) {
         Optional<LiveDocument> liveO = liveService.findById(id);
         if(!liveO.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else {
-            liveDocument.setId(liveO.get().getId());
-            return new ResponseEntity<LiveDocument>(liveService.save(liveDocument), HttpStatus.OK);
+            live.setId(liveO.get().getId());
+            return new ResponseEntity<LiveDocument>(liveService.save(live), HttpStatus.OK);
         }
     }
 
