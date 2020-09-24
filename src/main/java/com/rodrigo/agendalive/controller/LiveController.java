@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/lives")
 public class LiveController {
